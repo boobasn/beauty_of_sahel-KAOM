@@ -1,0 +1,48 @@
+name: Déploiement serveur
+
+# Met à jour le site sur votre serveur (VPS) via SSH : docker compose pull puis up.
+# Lancement manuel (onglet Actions) ou automatique à chaque version (tag v*).
+# Secrets requis (Settings > Secrets and variables > Actions) :
+#   DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY, et facultatif DEPLOY_PATH (défaut : ~/kaom)
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Version des images à déployer (latest, develop, 1.0.0…)"
+        default: latest
+  workflow_run:
+    workflows: ["Images Docker"]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Vérifier la configuration
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          if [ -z "$HOST" ]; then
+            echo "::error::Secret DEPLOY_HOST manquant : voir DEPLOIEMENT.md"
+            exit 1
+          fi
+      - uses: appleboy/ssh-action@v1.2.0
+        env:
+          KAOM_TAG: ${{ inputs.tag || 'latest' }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '~/kaom' }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: KAOM_TAG,DEPLOY_PATH
+          script: |
+            set -e
+            cd "$DEPLOY_PATH"
+            export KAOM_TAG
+            docker compose pull api web
+            docker compose up -d --no-build
+            docker image prune -f
+            docker compose ps
