@@ -13,3 +13,6 @@ backend/target/
 .vscode/
 *.iml
 .DS_Store
+
+# Secrets
+.env
