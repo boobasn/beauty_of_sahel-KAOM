@@ -1,0 +1,24 @@
+# Surcouche production : HTTPS automatique avec Caddy devant le site.
+# docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+services:
+  web:
+    ports: !reset []
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - web
+    environment:
+      DOMAIN: ${DOMAIN:?Définissez DOMAIN dans .env (ex. beautyofsahel.com)}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  caddy-data:
+  caddy-config:
