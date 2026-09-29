@@ -1,5 +1,7 @@
+import CartDrawer from './components/CartDrawer'
 import Footer from './components/Footer'
 import Header from './components/Header'
+import { CartProvider } from './lib/cart'
 import { useRoute } from './lib/router'
 import Backoffice from './pages/Backoffice'
 import Home from './pages/Home'
@@ -8,7 +10,7 @@ import Shop from './pages/Shop'
 
 const reviewLinks = [
   { href: '#', label: 'Accueil', page: 'home' },
-  { href: '#collection-harmattan', label: 'Collection', page: 'collections' },
+  { href: '#collections', label: 'Boutique', page: 'collections' },
   { href: '#produit-grand-boubou-laterite', label: 'Produit', page: 'product' },
   { href: '#backoffice', label: 'Backoffice', page: 'backoffice' },
 ]
@@ -16,7 +18,7 @@ const reviewLinks = [
 export default function App() {
   const route = useRoute()
   return (
-    <>
+    <CartProvider>
       {route.page === 'backoffice' ? (
         <Backoffice />
       ) : (
@@ -26,6 +28,7 @@ export default function App() {
           {route.page === 'collections' && <Shop key={route.collection ?? 'all'} collection={route.collection} />}
           {route.page === 'product' && <ProductPage key={route.slug} slug={route.slug} />}
           <Footer />
+          <CartDrawer />
         </>
       )}
       {/* Barre de navigation de la maquette, retirée en production */}
@@ -37,6 +40,6 @@ export default function App() {
           </a>
         ))}
       </nav>
-    </>
+    </CartProvider>
   )
 }

@@ -22,12 +22,14 @@ export interface Product {
   category: Category
   gender: 'Femme' | 'Homme' | 'Mixte'
   price: number
+  oldPrice?: number
+  bestseller?: boolean
   fabric: string
   colors: { name: string; hex: string }[]
   sizes: string[]
   motif: Motif
   tone: Tone
-  badge?: 'Nouveau' | 'Pièce unique' | 'Dernières pièces'
+  badge?: 'Nouveau' | 'Pièce unique' | 'Dernières pièces' | 'Promo'
   status: 'En ligne' | 'Brouillon' | 'Rupture'
   stock: number
 }
@@ -93,6 +95,7 @@ export const products: Product[] = [
     category: 'Boubous',
     gender: 'Femme',
     price: 95000,
+    bestseller: true,
     fabric: 'Bazin riche getzner, broderie ton sur ton',
     colors: [
       { name: 'Latérite', hex: '#A4532A' },
@@ -111,7 +114,9 @@ export const products: Product[] = [
     collection: 'ceremonie',
     category: 'Kaftans',
     gender: 'Homme',
-    price: 78000,
+    price: 66000,
+    oldPrice: 78000,
+    bestseller: true,
     fabric: 'Popeline de coton, broderie main au col',
     colors: [
       { name: 'Nuit', hex: '#1C1B26' },
@@ -152,6 +157,7 @@ export const products: Product[] = [
     motif: 'bogolan',
     tone: 'mil',
     badge: 'Pièce unique',
+    bestseller: true,
     status: 'En ligne',
     stock: 1,
   },
@@ -195,7 +201,9 @@ export const products: Product[] = [
     collection: 'harmattan',
     category: 'Accessoires',
     gender: 'Mixte',
-    price: 35000,
+    price: 29000,
+    oldPrice: 35000,
+    bestseller: true,
     fabric: 'Cuir tanné végétal, anse en wax',
     colors: [{ name: 'Cognac', hex: '#8A4B24' }],
     sizes: ['Unique'],
@@ -210,7 +218,8 @@ export const products: Product[] = [
     collection: 'fleuve',
     category: 'Robes',
     gender: 'Femme',
-    price: 42000,
+    price: 36000,
+    oldPrice: 42000,
     fabric: 'Wax hollandais, ceinture nouée',
     colors: [{ name: 'Ocre', hex: '#C08A2E' }],
     sizes: ['S', 'M', 'L'],
@@ -218,6 +227,22 @@ export const products: Product[] = [
     tone: 'mil',
     status: 'Rupture',
     stock: 0,
+  },
+  {
+    slug: 'foulard-kaedi',
+    name: 'Foulard Kaédi',
+    collection: 'fleuve',
+    category: 'Accessoires',
+    gender: 'Mixte',
+    price: 18000,
+    fabric: "Voile de coton teint à l'indigo naturel",
+    colors: [{ name: 'Indigo', hex: '#27336A' }],
+    sizes: ['Unique'],
+    motif: 'indigo',
+    tone: 'indigo',
+    badge: 'Nouveau',
+    status: 'En ligne',
+    stock: 15,
   },
 ]
 
