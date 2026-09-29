@@ -12,16 +12,17 @@ Trois niveaux, du plus simple au plus complet :
 |---|---|---|
 | `CI` | tout push, toute pull request | Tests de l’API (Maven) et lint + build du site |
 | `Images Docker` | push sur `main`/`develop`, tag `v*` | `ghcr.io/<compte>/beauty_of_sahel-kaom-api` et `-web`, étiquetées `develop`, `main`, `latest` (main), `1.2.3` (tag), sha |
-| `Démo GitHub Pages` | push sur `main`/`develop` | Site en mode démo sur `https://<compte>.github.io/beauty_of_sahel-KAOM/` |
+| `Démo GitHub Pages` | push sur `main` | Site en mode démo sur `https://<compte>.github.io/beauty_of_sahel-KAOM/` |
 | `Déploiement serveur` | manuel, ou après les images de `main` | `docker compose pull` + `up -d` sur le serveur via SSH |
 
 ## 1. Démo GitHub Pages
 
 Une seule fois : **Settings → Pages → Build and deployment → Source : GitHub Actions**.
 
-Ensuite chaque push sur `develop` publie la démo. En mode démo :
+Ensuite chaque fusion dans `main` publie la démo. En mode démo :
 - le catalogue d’exemple s’affiche, le panier et les formulaires fonctionnent sans rien envoyer ;
-- le backoffice (`/#admin`) accepte n’importe quel e-mail et un mot de passe de 4 caractères, et les modifications restent dans l’onglet du navigateur.
+- le backoffice (`/#admin`) accepte n’importe quel e-mail et un mot de passe de 4 caractères ;
+- articles, photos et demandes sont gardés **dans le navigateur utilisé** (pas sur un serveur) : les autres visiteurs ne les voient pas. Le bouton « Réinitialiser la démo » remet le catalogue d’exemple.
 
 > GitHub Pages sur un dépôt **privé** nécessite un abonnement GitHub Pro, Team ou Enterprise.
 > Sinon, rendez le dépôt public ou utilisez les options 2 et 3.
