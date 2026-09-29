@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { Services } from '../components/Footer'
 import Icon from '../components/Icon'
 import ProductCard from '../components/ProductCard'
-import { Chapters, Figures, Manifesto, StoryOpening, Ticker } from '../components/Story'
+import SahelScene from '../components/SahelScene'
+import { Quote, StoryOpening, Ticker } from '../components/Story'
 import Visual from '../components/Visual'
 import { findProduct, formatPrice, products, type Motif, type Tone } from '../data/catalog'
 
@@ -19,7 +20,7 @@ const slides: { eyebrow: string; title: string; text: string; cta: string; href:
   {
     eyebrow: 'Printemps-Été 2026',
     title: 'Fleuve',
-    text: 'Lin léger et indigo naturel teint à Kaédi, pensés pour la chaleur.',
+    text: 'Lin léger et bleu indigo, des lignes fluides pensées pour la chaleur.',
     cta: 'Acheter Fleuve',
     href: '#collection-fleuve',
     motif: 'indigo',
@@ -50,9 +51,9 @@ const tabs = [
 ] as const
 
 const journal = [
-  { tag: 'Savoir-faire', title: 'Huit bains d’indigo : visite chez les teinturières de Kaédi', motif: 'indigo', tone: 'indigo' },
+  { tag: 'Style', title: 'Trois façons de porter le boubou au quotidien', motif: 'indigo', tone: 'indigo' },
   { tag: 'Guide', title: 'Comment entretenir un boubou en bazin riche', motif: 'bazin', tone: 'sable' },
-  { tag: 'Coulisses', title: 'Harmattan : le shooting dans les dunes de Lompoul', motif: 'tissage', tone: 'mil' },
+  { tag: 'Coulisses', title: 'Dans les coulisses du shooting Harmattan', motif: 'tissage', tone: 'mil' },
 ] as const
 
 // Points posés sur la photo du look (en % de l'image).
@@ -144,9 +145,7 @@ export default function Home() {
     <main>
       <StoryOpening />
       <Ticker />
-      <Manifesto />
-      <Chapters />
-      <Figures />
+      <SahelScene quote="Une élégance née au Sahel, faite pour être remarquée partout." author="KAOM · Beauty of Sahel" />
 
       {/* LA SAISON */}
       <section className="season">
@@ -230,6 +229,8 @@ export default function Home() {
         </div>
       </section>
 
+      <Quote text="Les modes passent, le style est éternel." author="Yves Saint Laurent" variant="soft" />
+
       {/* SHOP THE LOOK */}
       <section className="section section-soft" id="lookbook">
         <div className="container look">
@@ -300,12 +301,12 @@ export default function Home() {
       {/* CLÔTURE DU RÉCIT */}
       <section className="closing">
         <div className="container closing-inner">
-          <p className="eyebrow">Beauty of Sahel</p>
           <p className="closing-title">
-            Portez l’histoire.
+            « La mode se démode,
             <br />
-            <em>Écrivez la suite.</em>
+            <em>le style jamais.</em> »
           </p>
+          <p className="closing-author">Coco Chanel</p>
           <div className="opening-ctas">
             <a className="btn btn-light" href="#collection-harmattan">Acheter Harmattan</a>
             <a className="btn btn-outline-light" href="#sur-mesure">Créer ma pièce sur mesure</a>

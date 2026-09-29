@@ -67,9 +67,9 @@ export const collections: Collection[] = [
     slug: 'fleuve',
     name: 'Fleuve',
     season: 'Printemps-Été 2026',
-    tagline: "Indigo de Kaédi, lin léger, lignes d'eau.",
+    tagline: 'Indigo profond, lin léger, lignes fluides.',
     description:
-      "Une collection pensée pour la chaleur : lin, voile de coton et teintures à l'indigo naturel réalisées par des artisanes de la vallée du fleuve Sénégal.",
+      "Une collection pensée pour la chaleur : lin, voile de coton et bleu indigo, des coupes légères pour les journées d'été.",
     motif: 'indigo',
     tone: 'indigo',
     pieces: 18,
@@ -151,7 +151,7 @@ export const products: Product[] = [
     category: 'Vestes',
     gender: 'Mixte',
     price: 54000,
-    fabric: 'Bogolan de Ségou, doublure coton',
+    fabric: 'Bogolan tissé main, doublure coton',
     colors: [{ name: 'Terre', hex: '#6B4A2E' }],
     sizes: ['S', 'M', 'L', 'XL'],
     motif: 'bogolan',
@@ -229,8 +229,8 @@ export const products: Product[] = [
     stock: 0,
   },
   {
-    slug: 'foulard-kaedi',
-    name: 'Foulard Kaédi',
+    slug: 'foulard-indigo',
+    name: 'Foulard Indigo',
     collection: 'fleuve',
     category: 'Accessoires',
     gender: 'Mixte',
@@ -243,29 +243,6 @@ export const products: Product[] = [
     badge: 'Nouveau',
     status: 'En ligne',
     stock: 15,
-  },
-]
-
-export const fabrics = [
-  {
-    name: 'Bazin riche',
-    origin: 'Teint et battu à Bamako',
-    text: "Damassé de coton amidonné puis battu au maillet jusqu'à obtenir son brillant.",
-  },
-  {
-    name: 'Bogolan',
-    origin: 'Ségou, Mali',
-    text: 'Coton tissé en bandes, peint à la boue fermentée et aux décoctions de feuilles.',
-  },
-  {
-    name: 'Indigo',
-    origin: 'Kaédi, vallée du fleuve',
-    text: "Teinture végétale en cuve. Chaque bain fonce la couleur ; une pièce en demande jusqu'à huit.",
-  },
-  {
-    name: 'Thioup',
-    origin: 'Dakar',
-    text: 'Technique de teinture par nouage et pliage qui dessine des motifs en réserve.',
   },
 ]
 

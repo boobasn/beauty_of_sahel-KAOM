@@ -2343,6 +2343,7 @@ button {
 }
 .opening-title em {
   font-style: italic;
+  white-space: nowrap;
   color: var(--t-henne);
 }
 .opening-lead {
@@ -2445,136 +2446,6 @@ button {
   }
 }
 
-/* Manifeste */
-.manifesto {
-  padding-block: clamp(4.5rem, 10vw, 9rem);
-}
-.manifesto-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 2rem;
-}
-.manifesto-inner .eyebrow {
-  margin: 0;
-}
-.manifesto-text {
-  margin: 0;
-  max-width: 980px;
-  font-family: var(--f-display);
-  font-size: clamp(1.7rem, 1.1rem + 2.4vw, 3.3rem);
-  line-height: 1.22;
-  text-wrap: balance;
-}
-.manifesto-text em {
-  color: var(--t-henne);
-}
-.manifesto-sub {
-  margin: 0;
-  max-width: 60ch;
-  color: var(--muted);
-  font-size: var(--s-lg);
-}
-
-/* Chapitres */
-.chapters {
-  padding-block: clamp(3.5rem, 7vw, 6rem);
-  background: var(--soft);
-}
-.chapter-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: clamp(3rem, 8vw, 7rem);
-}
-.chapter {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(2rem, 7vw, 7rem);
-  align-items: center;
-}
-.chapter[data-flip='true'] .chapter-visual {
-  order: 2;
-}
-.chapter-visual {
-  max-width: 520px;
-  width: 100%;
-  justify-self: center;
-}
-.chapter-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  max-width: 30rem;
-}
-.chapter-n {
-  font-family: var(--f-display);
-  font-style: italic;
-  font-size: clamp(4rem, 3rem + 4vw, 7rem);
-  line-height: 0.9;
-  color: var(--t-henne);
-}
-.chapter-place {
-  margin: 0;
-  font-size: var(--s-xs);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.chapter-title {
-  margin: 0;
-  font-family: var(--f-display);
-  font-weight: 400;
-  font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.6rem);
-  line-height: 1.1;
-  text-wrap: balance;
-}
-.chapter-text {
-  margin: 0;
-  color: var(--muted);
-  font-size: var(--s-lg);
-}
-
-/* Chiffres */
-.figures {
-  border-bottom: 1px solid var(--line);
-}
-.figures-inner {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-.figure {
-  padding: 2.5rem 1.5rem;
-  text-align: center;
-}
-.figure + .figure {
-  border-left: 1px solid var(--line);
-}
-.figure-value {
-  margin: 0;
-  font-family: var(--f-display);
-  font-size: clamp(2.8rem, 2rem + 2.5vw, 4.4rem);
-  line-height: 1;
-  font-variant-numeric: lining-nums;
-}
-.figure-value span {
-  margin-left: 0.3rem;
-  font-family: var(--f-body);
-  font-size: var(--s-sm);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.figure-label {
-  margin: 0.6rem auto 0;
-  max-width: 20ch;
-  font-size: var(--s-sm);
-  color: var(--muted);
-}
-
 /* Saison */
 .season {
   padding-top: clamp(3.5rem, 7vw, 6rem);
@@ -2603,6 +2474,13 @@ button {
   font-size: clamp(2.6rem, 1.4rem + 5vw, 6rem);
   line-height: 1;
 }
+.closing-author {
+  margin: -0.6rem 0 0.6rem;
+  font-size: var(--s-xs);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
 .closing-title em {
   color: var(--t-sable);
 }
@@ -2626,31 +2504,199 @@ button {
 }
 
 @media (max-width: 900px) {
-  .opening-grid,
-  .chapter {
+  .opening-grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .chapter[data-flip='true'] .chapter-visual {
-    order: 0;
   }
   .opening-collage {
     max-width: 520px;
   }
-  .figures-inner {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .figure:nth-child(3) {
-    border-left: 0;
-  }
-  .figure:nth-child(-n + 2) {
-    border-bottom: 1px solid var(--line);
-  }
 }
 @media (max-width: 560px) {
+  .opening-title {
+    font-size: clamp(2.6rem, 13vw, 3.4rem);
+  }
   .opening-meta {
     flex-direction: column;
   }
-  .figure {
-    padding: 1.8rem 0.75rem;
+}
+
+/* Citations */
+.quote {
+  padding-block: clamp(4rem, 9vw, 8rem);
+}
+.quote-soft {
+  background: var(--soft);
+}
+.quote-inner {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.2rem;
+}
+.quote-mark {
+  font-family: var(--f-display);
+  font-size: clamp(5rem, 4rem + 4vw, 8rem);
+  line-height: 0.5;
+  height: 0.45em;
+  color: var(--t-henne);
+}
+.quote-text {
+  margin: 0;
+  max-width: 900px;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: clamp(1.9rem, 1.2rem + 2.8vw, 3.8rem);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.quote-author {
+  font-size: var(--s-xs);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.quote-author::before {
+  content: '— ';
+}
+
+/* Paysage du Sahel animé */
+.sahel {
+  position: relative;
+  height: clamp(460px, 52vw, 720px);
+  overflow: hidden;
+  background: #f5dcbc;
+}
+.sahel-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.sahel-quote {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto;
+  padding-top: clamp(2.5rem, 6vw, 5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  color: #141414;
+}
+.sahel-quote blockquote {
+  margin: 0;
+  max-width: 860px;
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: clamp(1.8rem, 1.1rem + 2.8vw, 3.6rem);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.sahel-quote blockquote::before {
+  content: '« ';
+}
+.sahel-quote blockquote::after {
+  content: ' »';
+}
+.sahel-quote figcaption {
+  font-size: var(--s-xs);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #5a4636;
+}
+.sahel-stroke {
+  fill: none;
+  stroke: #2f2019;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.sahel-saddle {
+  fill: #b3401b;
+}
+.sahel-sun {
+  animation: sunBreath 8s ease-in-out infinite alternate;
+  transform-origin: 820px 330px;
+}
+@keyframes sunBreath {
+  from {
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    transform: translateY(-6px) scale(1.02);
+  }
+}
+.sahel-birds {
+  animation: birds 40s linear infinite;
+}
+@keyframes birds {
+  from {
+    transform: translate(-320px, 20px);
+  }
+  to {
+    transform: translate(1500px, -60px);
+  }
+}
+.sahel-caravan {
+  animation: caravan 70s linear infinite;
+  animation-delay: -22s;
+}
+@keyframes caravan {
+  from {
+    transform: translateX(-260px);
+  }
+  to {
+    transform: translateX(1560px);
+  }
+}
+.sahel-bob {
+  animation: bob 1.2s ease-in-out infinite alternate;
+}
+@keyframes bob {
+  to {
+    transform: translateY(-2px);
+  }
+}
+.sahel-leg-a,
+.sahel-leg-b {
+  transform-box: fill-box;
+  transform-origin: top center;
+  animation: stride 1.2s ease-in-out infinite alternate;
+}
+.sahel-leg-b {
+  animation-direction: alternate-reverse;
+}
+@keyframes stride {
+  from {
+    transform: rotate(10deg);
+  }
+  to {
+    transform: rotate(-10deg);
+  }
+}
+.sahel-sand circle {
+  animation: sand 8s linear infinite;
+  opacity: 0;
+}
+@keyframes sand {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(260px, -30px);
+    opacity: 0;
+  }
+}
+@media (max-width: 560px) {
+  .sahel {
+    height: 520px;
   }
 }
