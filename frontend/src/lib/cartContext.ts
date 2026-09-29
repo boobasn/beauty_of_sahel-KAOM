@@ -1,9 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { Product } from '../data/catalog'
-
-
-// Panier de la maquette. La commande est envoyée à la créatrice sur WhatsApp ;
-// il n'y a pas de paiement en ligne à ce stade.
+import type { Product } from '../api/types'
 
 export interface CartLine {
   slug: string
@@ -21,6 +17,7 @@ export interface CartState {
   add: (line: Omit<CartLine, 'qty'>, qty?: number) => void
   setQty: (index: number, qty: number) => void
   remove: (index: number) => void
+  clear: () => void
   wishlist: string[]
   toggleWish: (slug: string) => void
 }

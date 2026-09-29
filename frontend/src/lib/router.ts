@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react'
 
-// Routage par ancre (#collections, #produit-robe-tiaya…) pour la maquette.
-// Sera remplacé par react-router lors du développement complet.
+// Routage par ancre (#collections, #produit-robe-tiaya, #admin…) : fonctionne sur
+// n'importe quel hébergement statique, GitHub Pages compris, sans règle de réécriture.
 
 export type Route =
   | { page: 'home' }
-  | { page: 'collections'; collection?: string }
+  | { page: 'collections'; collection?: string; promo?: boolean; category?: string }
   | { page: 'product'; slug: string }
-  | { page: 'backoffice' }
+  | { page: 'admin' }
 
 export function parseHash(hash: string): Route {
-  const token = hash.replace(/^#/, '')
+  const token = decodeURIComponent(hash.replace(/^#/, ''))
   if (token === 'collections') return { page: 'collections' }
+  if (token === 'promotions') return { page: 'collections', promo: true }
+  if (token.startsWith('categorie-')) return { page: 'collections', category: token.slice(10).toUpperCase() }
   if (token.startsWith('collection-')) return { page: 'collections', collection: token.slice(11) }
   if (token.startsWith('produit-')) return { page: 'product', slug: token.slice(8) }
-  if (token === 'backoffice') return { page: 'backoffice' }
+  if (token === 'admin' || token === 'backoffice') return { page: 'admin' }
   return { page: 'home' }
 }
 

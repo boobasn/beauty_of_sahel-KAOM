@@ -29,13 +29,13 @@ export function StoryOpening() {
 
         <div className="opening-collage" aria-hidden="true">
           <div className="collage-main">
-            <Visual motif="bazin" tone="henne" category="Boubous" ratio="3 / 4" />
+            <Visual motif="bazin" tone="henne" category="BOUBOUS" ratio="3 / 4" />
           </div>
           <div className="collage-swatch">
             <Visual motif="indigo" tone="indigo" ratio="1 / 1" />
           </div>
           <div className="collage-small">
-            <Visual motif="bogolan" tone="mil" category="Vestes" ratio="4 / 5" />
+            <Visual motif="bogolan" tone="mil" category="VESTES" ratio="4 / 5" />
           </div>
           <span className="collage-caption">Collection Harmattan, automne-hiver 2026</span>
         </div>

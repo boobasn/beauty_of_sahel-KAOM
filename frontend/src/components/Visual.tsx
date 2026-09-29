@@ -1,22 +1,23 @@
 import { useId } from 'react'
-import type { Category, Motif, Tone } from '../data/catalog'
+import { assetUrl } from '../api/client'
+import type { Category, Motif, Tone } from '../api/types'
 
-// Emplacement photo de la maquette : un croquis à plat du vêtement, rempli du motif
-// de son tissu. Il sera remplacé par les photos réelles envoyées depuis le backoffice.
+// Photo d'un article. Tant qu'aucune photo n'est envoyée depuis le backoffice,
+// on affiche un croquis à plat du vêtement rempli du motif de son tissu.
 
 type Shape = 'ample' | 'robe' | 'veste' | 'sac' | 'none'
 
 const shapeFor = (category?: Category): Shape => {
   switch (category) {
-    case 'Boubous':
-    case 'Kaftans':
-    case 'Ensembles':
+    case 'BOUBOUS':
+    case 'KAFTANS':
+    case 'ENSEMBLES':
       return 'ample'
-    case 'Robes':
+    case 'ROBES':
       return 'robe'
-    case 'Vestes':
+    case 'VESTES':
       return 'veste'
-    case 'Accessoires':
+    case 'ACCESSOIRES':
       return 'sac'
     default:
       return 'none'
@@ -78,6 +79,8 @@ function Pattern({ id, motif }: { id: string; motif: Motif }) {
 }
 
 interface VisualProps {
+  src?: string | null
+  alt?: string
   motif: Motif
   tone: Tone
   category?: Category
@@ -86,9 +89,17 @@ interface VisualProps {
   className?: string
 }
 
-export default function Visual({ motif, tone, category, label, ratio = '4 / 5', className = '' }: VisualProps) {
+export default function Visual({ src, alt = '', motif, tone, category, label, ratio = '4 / 5', className = '' }: VisualProps) {
   const pid = `m${useId().replace(/[^a-zA-Z0-9]/g, '')}`
   const shape = shapeFor(category)
+  if (src) {
+    return (
+      <figure className={`visual visual-photo ${className}`} style={{ aspectRatio: ratio }}>
+        <img src={assetUrl(src)} alt={alt} loading="lazy" decoding="async" />
+        {label && <figcaption className="visual-label">{label}</figcaption>}
+      </figure>
+    )
+  }
   return (
     <figure className={`visual tone-${tone} ${className}`} style={{ aspectRatio: ratio }}>
       <svg className="visual-cloth" aria-hidden="true">

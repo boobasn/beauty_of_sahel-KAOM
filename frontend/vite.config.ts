@@ -7,6 +7,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     // En développement, les appels /api partent vers Spring Boot.
-    proxy: { '/api': 'http://localhost:8080' },
+    proxy: {
+      '/api': 'http://localhost:8080',
+      '/uploads': 'http://localhost:8080',
+    },
   },
 })
