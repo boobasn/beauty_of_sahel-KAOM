@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Services } from '../components/Footer'
 import Icon from '../components/Icon'
 import ProductCard from '../components/ProductCard'
+import { Chapters, Figures, Manifesto, StoryOpening, Ticker } from '../components/Story'
 import Visual from '../components/Visual'
 import { findProduct, formatPrice, products, type Motif, type Tone } from '../data/catalog'
 
@@ -96,7 +97,7 @@ function HeroSlider() {
           <div className="container hero-content">
             <div className="hero-text">
               <p className="eyebrow">{s.eyebrow}</p>
-              <h1 className="hero-title">{s.title}</h1>
+              <h2 className="hero-title">{s.title}</h2>
               <p className="hero-lead">{s.text}</p>
               <a className="btn btn-dark" href={s.href} tabIndex={i === index ? 0 : -1}>
                 {s.cta}
@@ -141,7 +142,23 @@ export default function Home() {
 
   return (
     <main>
-      <HeroSlider />
+      <StoryOpening />
+      <Ticker />
+      <Manifesto />
+      <Chapters />
+      <Figures />
+
+      {/* LA SAISON */}
+      <section className="season">
+        <div className="container section-head">
+          <div>
+            <p className="eyebrow">La saison</p>
+            <h2 className="h2">Trois collections, trois paysages</h2>
+          </div>
+          <a className="link-underline" href="#collections">Toute la boutique</a>
+        </div>
+        <HeroSlider />
+      </section>
       <Services />
 
       {/* CATÉGORIES */}
@@ -280,8 +297,24 @@ export default function Home() {
         </div>
       </section>
 
+      {/* CLÔTURE DU RÉCIT */}
+      <section className="closing">
+        <div className="container closing-inner">
+          <p className="eyebrow">Beauty of Sahel</p>
+          <p className="closing-title">
+            Portez l’histoire.
+            <br />
+            <em>Écrivez la suite.</em>
+          </p>
+          <div className="opening-ctas">
+            <a className="btn btn-light" href="#collection-harmattan">Acheter Harmattan</a>
+            <a className="btn btn-outline-light" href="#sur-mesure">Créer ma pièce sur mesure</a>
+          </div>
+        </div>
+      </section>
+
       {/* JOURNAL */}
-      <section className="section section-tight">
+      <section className="section">
         <div className="container">
           <div className="section-head">
             <div>
