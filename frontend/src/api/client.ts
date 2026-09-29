@@ -75,14 +75,70 @@ const json = (body: unknown) => JSON.stringify(body)
 // ---------------------------------------------------------------------------
 // Magasin en mémoire pour le mode démo
 // ---------------------------------------------------------------------------
-const demo = {
+// Les modifications de la démo sont gardées dans le navigateur (localStorage) : elles
+// survivent au rechargement et aux autres onglets, mais restent propres à ce navigateur.
+const DEMO_KEY = 'kaom.demo.v1'
+type DemoStore = {
+  collections: Collection[]
+  products: Product[]
+  requests: CustomerRequest[]
+  subscribers: number
+  nextId: number
+}
+const freshDemo = (): DemoStore => ({
   collections: structuredClone(demoCollections),
   products: structuredClone(demoProducts),
-  requests: [] as CustomerRequest[],
+  requests: [],
   subscribers: 0,
   nextId: 100,
+})
+function loadDemo(): DemoStore {
+  if (!DEMO) return freshDemo()
+  try {
+    const raw = localStorage.getItem(DEMO_KEY)
+    return raw ? { ...freshDemo(), ...(JSON.parse(raw) as DemoStore) } : freshDemo()
+  } catch {
+    return freshDemo()
+  }
 }
+let demo = loadDemo()
 const later = <T,>(value: T) => new Promise<T>((r) => setTimeout(() => r(structuredClone(value)), 150))
+/** Enregistre la démo puis répond, comme le ferait l'API. */
+const saved = <T,>(value: T) => {
+  try {
+    localStorage.setItem(DEMO_KEY, JSON.stringify(demo))
+  } catch {
+    return Promise.reject(
+      new ApiError(507, 'Stockage de la démo plein : retirez des photos ou réinitialisez la démo.'),
+    )
+  }
+  return later(value)
+}
+
+/** Remet la démo à zéro (catalogue d'exemple). */
+export function resetDemo() {
+  try {
+    localStorage.removeItem(DEMO_KEY)
+  } catch {
+    // stockage indisponible
+  }
+  demo = freshDemo()
+}
+
+/** Réduit une photo (1000 px, JPEG) pour qu'elle tienne dans le stockage du navigateur. */
+async function compressImage(file: File): Promise<string> {
+  if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+    throw new ApiError(400, 'Format accepté : JPG, PNG ou WebP')
+  }
+  const bitmap = await createImageBitmap(file)
+  const scale = Math.min(1, 1000 / Math.max(bitmap.width, bitmap.height))
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.round(bitmap.width * scale)
+  canvas.height = Math.round(bitmap.height * scale)
+  canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+  bitmap.close()
+  return canvas.toDataURL('image/jpeg', 0.78)
+}
 const slugify = (s: string) =>
   s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'article'
 const visible = () =>
@@ -132,19 +188,19 @@ export const api = {
       total: lines.reduce((n, l) => n + l.total, 0), createdAt: new Date().toISOString(),
     }
     demo.requests.unshift(r)
-    return later(r)
+    return saved(r)
   },
 
   subscribe: (email: string): Promise<void> => {
     if (!DEMO) return request('/api/newsletter', { method: 'POST', body: json({ email }) })
     demo.subscribers++
-    return later(undefined)
+    return saved(undefined)
   },
 
   login: (email: string, password: string): Promise<Session> => {
     if (!DEMO) return request('/api/auth/login', { method: 'POST', body: json({ email, password }) })
     if (!email || password.length < 4) return Promise.reject(new ApiError(401, 'E-mail ou mot de passe incorrect'))
-    return later({ token: 'demo', expiresAt: new Date(Date.now() + 864e5).toISOString(), email, name: 'Démo' })
+    return saved({ token: 'demo', expiresAt: new Date(Date.now() + 864e5).toISOString(), email, name: 'Démo' })
   },
 }
 
@@ -171,38 +227,43 @@ export const admin = {
     if (!DEMO) return request('/api/admin/products', { method: 'POST', body: json(input) })
     const p = toProduct(input)
     demo.products.unshift(p)
-    return later(p)
+    return saved(p)
   },
 
   updateProduct: (id: number, input: ProductInput): Promise<Product> => {
     if (!DEMO) return request(`/api/admin/products/${id}`, { method: 'PUT', body: json(input) })
     const i = demo.products.findIndex((p) => p.id === id)
     demo.products[i] = toProduct(input, demo.products[i])
-    return later(demo.products[i])
+    return saved(demo.products[i])
   },
 
   deleteProduct: (id: number): Promise<void> => {
     if (!DEMO) return request(`/api/admin/products/${id}`, { method: 'DELETE' })
     demo.products = demo.products.filter((p) => p.id !== id)
-    return later(undefined)
+    return saved(undefined)
   },
 
-  uploadImages: (id: number, files: File[]): Promise<Product> => {
+  uploadImages: async (id: number, files: File[]): Promise<Product> => {
     if (!DEMO) {
       const form = new FormData()
       files.forEach((f) => form.append('files', f))
       return request(`/api/admin/products/${id}/images`, { method: 'POST', body: form })
     }
     const p = demo.products.find((x) => x.id === id)!
-    files.forEach((f) => p.images.push({ id: demo.nextId++, url: URL.createObjectURL(f), alt: p.name }))
-    return later(p)
+    if (p.images.length + files.length > 8) throw new ApiError(400, '8 photos maximum par article')
+    const urls = await Promise.all(files.map(compressImage))
+    urls.forEach((url) => p.images.push({ id: demo.nextId++, url, alt: p.name }))
+    return saved(p).catch((e) => {
+      p.images = p.images.filter((i) => !urls.includes(i.url))
+      throw e
+    })
   },
 
   deleteImage: (id: number, imageId: number): Promise<Product> => {
     if (!DEMO) return request(`/api/admin/products/${id}/images/${imageId}`, { method: 'DELETE' })
     const p = demo.products.find((x) => x.id === id)!
     p.images = p.images.filter((i) => i.id !== imageId)
-    return later(p)
+    return saved(p)
   },
 
   collections: (): Promise<Collection[]> =>
@@ -212,14 +273,14 @@ export const admin = {
     if (!DEMO) return request('/api/admin/collections', { method: 'POST', body: json(input) })
     const col: Collection = { ...input, id: demo.nextId++, slug: input.slug || slugify(input.name), coverUrl: null, productCount: 0 }
     demo.collections.push(col)
-    return later(col)
+    return saved(col)
   },
 
   updateCollection: (id: number, input: CollectionInput): Promise<Collection> => {
     if (!DEMO) return request(`/api/admin/collections/${id}`, { method: 'PUT', body: json(input) })
     const i = demo.collections.findIndex((x) => x.id === id)
     demo.collections[i] = { ...demo.collections[i], ...input, slug: input.slug || demo.collections[i].slug }
-    return later(demo.collections[i])
+    return saved(demo.collections[i])
   },
 
   deleteCollection: (id: number): Promise<void> => {
@@ -229,7 +290,7 @@ export const admin = {
       return Promise.reject(new ApiError(409, "Déplacez ou supprimez d'abord les articles de cette collection"))
     }
     demo.collections = demo.collections.filter((x) => x.id !== id)
-    return later(undefined)
+    return saved(undefined)
   },
 
   uploadCover: (id: number, file: File): Promise<Collection> => {
@@ -239,8 +300,10 @@ export const admin = {
       return request(`/api/admin/collections/${id}/cover`, { method: 'POST', body: form })
     }
     const col = demo.collections.find((x) => x.id === id)!
-    col.coverUrl = URL.createObjectURL(file)
-    return later(col)
+    return compressImage(file).then((url) => {
+      col.coverUrl = url
+      return saved(col)
+    })
   },
 
   requests: (): Promise<CustomerRequest[]> => (DEMO ? later(demo.requests) : request('/api/admin/requests')),
@@ -249,7 +312,7 @@ export const admin = {
     if (!DEMO) return request(`/api/admin/requests/${id}`, { method: 'PATCH', body: json({ status }) })
     const r = demo.requests.find((x) => x.id === id)!
     r.status = status
-    return later(r)
+    return saved(r)
   },
 
   subscribers: (): Promise<{ email: string; createdAt: string }[]> =>
@@ -258,6 +321,6 @@ export const admin = {
   deleteRequest: (id: number): Promise<void> => {
     if (!DEMO) return request(`/api/admin/requests/${id}`, { method: 'DELETE' })
     demo.requests = demo.requests.filter((x) => x.id !== id)
-    return later(undefined)
+    return saved(undefined)
   },
 }

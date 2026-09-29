@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DEMO, setToken, setUnauthorizedHandler } from '../../api/client'
+import { DEMO, resetDemo, setToken, setUnauthorizedHandler } from '../../api/client'
 import type { Session } from '../../api/types'
 import Wordmark from '../../components/Wordmark'
 import Collections from './Collections'
@@ -68,6 +68,18 @@ export default function AdminApp() {
           <a className="bo-back" href="#" target="_blank" rel="noreferrer">
             Voir le site
           </a>
+          {DEMO && (
+            <button
+              className="bo-back"
+              onClick={() => {
+                resetDemo()
+                setSection('dashboard')
+                window.location.reload()
+              }}
+            >
+              Réinitialiser la démo
+            </button>
+          )}
           <button className="bo-back" onClick={logout}>
             Se déconnecter
           </button>
