@@ -19,17 +19,24 @@ jobs:
   deploy:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    environment: production
     steps:
       - name: Vérifier la configuration
+        id: check
         env:
           HOST: ${{ secrets.DEPLOY_HOST }}
+          EVENT: ${{ github.event_name }}
         run: |
-          if [ -z "$HOST" ]; then
+          if [ -n "$HOST" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          elif [ "$EVENT" = "workflow_dispatch" ]; then
             echo "::error::Secret DEPLOY_HOST manquant : voir DEPLOIEMENT.md"
             exit 1
+          else
+            echo "::notice::Aucun serveur configuré (secret DEPLOY_HOST absent) : déploiement ignoré. Voir DEPLOIEMENT.md."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
           fi
       - uses: appleboy/ssh-action@v1.2.0
+        if: steps.check.outputs.ready == 'true'
         env:
           KAOM_TAG: ${{ inputs.tag || 'latest' }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '~/kaom' }}
